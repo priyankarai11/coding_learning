@@ -1,0 +1,35 @@
+function debounce(func,delay){
+    let timeoutId;
+    return function(...args){
+        clearTimeout(timeoutId);
+        timeoutId=setTimeout(()=>func(...args),delay)
+    }
+}
+
+const debounceFunc=debounce(()=>console.log("hello"),1000)
+debounceFunc();
+
+---------------------------------------------
+
+Array.prototype.mapped=function(callback){
+    let res=[]
+    for(let i=0;i<this.length;i++){
+        if(callback(this[i],i,this)){
+            res.push(this[i])
+        }
+    }
+    return res
+}
+
+const arr=[1,2,3,4]
+const mm=arr.mapped(x=>x%2===0)
+console.log(mm)
+---------------------------------------
+PWA stands for Progressive Web App. It's a web application that behaves like a native app — it can be installed, works offline, supports push notifications, and gives a fast, app-like user experience using technologies like Service Workers and Web App Manifest.
+-------------------------
+Answer:
+
+Pseudo-classes: Used to define the special state of an element (e.g., :hover, :focus, :nth-child()).
+
+Pseudo-elements: Used to style specific parts of an element (e.g., ::before, ::after, ::first-line).
+------------------------------------------

@@ -1,0 +1,359 @@
+1. Check if Two Strings Are Isomorphic
+
+function isoTrophic(s,t){
+    for(let i=0;i<s.length;i++){
+        if(s.indexOf(s[i])!==t.indexOf(t[i])){
+            return false
+        }
+    }
+    return true
+}
+console.log(isoTrophic("paper","title"))
+
+-----------------------------------------------------
+
+2. Longest Common Prefix
+
+const str=["flower","flow","flight"]
+if(str.length===0) return ""
+str.sort()
+let index=0
+let first=str[0]
+let last=str[str.length-1]
+
+while(index<first.length && first[index]===last[index]){
+    index++
+}
+console.log(first.slice(0,index))
+-------------------------------------------------------------
+3. Longest Palindromic Substring
+
+const str="babad"
+let res=''
+function extend(left,right){
+    while(left>=0 && right<=str.length-1 && str[left]===str[right]){
+        left--
+        right++
+    }
+    return str.slice(left+1,right)
+}
+
+
+for(let i=0;i<str.length;i++){
+    let odd=extend(i,i)
+    let even=extend(i,i+1)
+    if(odd.length>res.length) res=odd
+    if(even.length>res.length) res=even
+}
+console.log(res)
+
+--------------------------------------------------------------
+4. Compress String (aabccccc → a2b1c5)
+
+const str="aabcccccaaa"
+let res=''
+let count=1
+for(let i=0;i<str.length;i++){
+  if(str[i]===str[i+1]){
+      count++
+  }else{
+      res+=str[i]+count
+      count=1
+  }
+}
+console.log(res)
+--------------------------------------------------------------
+5. Capitalize First Letter of Each Word
+
+const str="hello world from js"
+
+// const res=str.split(' ').map(ele=>ele.charAt(0).toUpperCase()+ ele.slice(1)).join(' ')
+let res=""
+for(let i=0;i<str.length;i++){
+    if(i===0 || str[i-1]===' '){
+        res+=str[i].toUpperCase()
+    }else{
+            res+=str[i]
+    }
+}
+
+console.log(res)
+
+-----------------------------------------------------------------
+6. Check Balanced Parentheses
+
+function check(str){
+    let s=[], map={')':'(','}':'{',']':'['}
+    for(let i of str){
+        if(i==='(' || i==='[' || i==='{'){
+            s.push(i)
+        }else{
+            if(s.pop()!==map[i]){
+                return false;
+            }
+        }
+    }
+    return s.length===0
+}
+console.log(check('{[()]}}'))  
+
+---------------------------------------------------------------
+7. snake to camelCase
+
+//"react_js" "reactJs"
+
+
+const str="hello_world"
+
+const res=str.replace(/_([a-z])/g,(_,letter)=>letter.toUpperCase())
+console.log(res)
+
+
+vise-versa
+
+const str="reactJsDev"
+
+const res=str.replace(/([A-Z])/g,'_$1').toLowerCase()
+console.log(res)
+-----------------------------------------------------------------
+8. Check If Subsequence
+
+const str="abc", sub="ahbgdc"
+
+let i=0;
+let j=0;
+
+while(i<str.length && j<sub.length){
+    if(str[i]===sub[j]) i++;
+    j++;
+}
+
+console.log(str.length===i)
+
+-----------------------------------------------------------------
+9. Find All Permutations of String
+
+function perm(str){
+    if(str.length===0) return [str]
+    
+    return str.split('').flatMap((char,i)=>{
+        const replaced=str.slice(0,i)+str.slice(i+1)
+        return perm(replaced).map(ele=>char+ele)
+    })
+}
+
+console.log(perm("abc"))
+
+
+function perm(str){
+    if(str.length===0) return [str]
+    let res=[]
+    for(let i=0;i<str.length;i++){
+        const char=str[i]
+        const replaced=str.slice(0,i)+str.slice(i+1)
+        
+        for(let ele of perm(replaced)){
+            res.push(char+ele)
+        }
+    }
+        
+     return res  
+}
+
+console.log(perm("abc"))
+
+-----------------------------------------------------------
+10. Longest Substring with At Most K Distinct Characters
+
+let str="eceba", k=2
+
+let longest=''
+let current=''
+
+for(let char of str){
+    current+=char
+    
+    while([...new Set(current)].length>k){
+        current=current.slice(1)
+    }
+    
+    if(current.length>longest.length){
+        longest=current
+    }
+}
+
+console.log(longest)
+-----------------------------------------------------------------------------------
+11. Count Substrings with Exactly K Distinct Characters
+
+function countAtMostK(s,k){
+    let count={}
+    let left=0;res=0
+    
+    for(let right=0;right<s.length;right++){
+        count[s[right]]=(count[s[right]]||0)+1
+        
+        while(Object.keys(count).length>k){
+            count[s[left]]--;
+            if(count[s[left]]===0) delete count[s[left]];
+            left++
+        }
+        
+        res+=right-left+1
+    }
+    return res
+}
+let str = "pqpqs", k = 2;
+console.log(countAtMostK(str, k) - countAtMostK(str, k - 1))
+
+--------------------------------------------------------------------------
+12. Count Anagram Occurrences in a String
+
+let str="cbaebabacd", k="abc"
+let n=k.length
+const s=k.split('').sort().join('')
+let res=[]
+for(let i=0;i<=str.length-n;i++){
+    const p=str.slice(i,i+n);
+        if(p.split('').sort().join('')===s){
+            res.push(i)
+        }
+    }
+
+console.log(res.length)
+------------------------------------------------------------------------
+13. Longest Substring with At Most K Repeating Characters
+
+let s = "aaabb";
+let k = 3;
+
+let currentChar=s[0]
+let maxString=currentChar;
+let tempString=currentChar;
+for(let i=0;i<s.length;i++){
+    if(currentChar===s[i]){
+        tempString+=s[i]
+    }else{
+        currentChar=s[i]
+        tempString=s[i]
+    }
+    if(tempString.length<=k && tempString.length>maxString.length){
+        maxString=tempString
+    }
+}
+console.log(maxString)
+
+-----------------------------------------------------------------
+14. Valid Palindrome with at Most One Deletion
+
+let str = "cbbcc";
+let found=false
+for (let i=0;i<str.length;i++){
+    const copy=[...str]
+    copy.splice(i,1)
+    const c=copy.join('')
+    const rev=[...copy].reverse().join('')
+    if(str===str.split('').reverse().join('') || c===rev){
+        found=true
+        break
+    }
+}
+console.log(found)
+
+
+----------------------------------------------
+15. Decode Encoded String (LeetCode 394 style)
+
+Input: "3[a]2[bc]" → Output: "aaabcbc"
+
+const str = "3[a]2[bc]3[priya]";
+let res = '';
+const pattern = /(\d+)\[([a-z]+)\]/g; // matches number[someletters]
+let match;
+
+// loop through all matches
+while ((match = pattern.exec(str)) !== null) {
+    const num = Number(match[1]);  // the number before brackets
+    const letters = match[2];      // letters inside brackets
+    res += letters.repeat(num);    // repeat letters and append to result
+}
+
+console.log(res); // "aaabcbc"
+
+const str = "3[a]2[bc]2[priya]";
+
+const res = str.replace(/(\d+)\[([a-z]+)\]/g, (_, num, letters) => letters.repeat(num));
+
+console.log(res);
+----------------------------------------------------------------------------
+16. add 2 binary
+
+const str = "1010" 
+const str1="1011"
+
+console.log((parseInt(str,2)+parseInt(str1,2)).toString(2))
+=====================================
+Note:
+
+Decimal → Binary / Hex / Octal
+const dec = 42;
+
+const binary = dec.toString(2); // base 2
+const hex    = dec.toString(16); // base 16
+const oct    = dec.toString(8); // base 8
+
+console.log(binary); // "101010"
+console.log(hex);    // "2a"
+console.log(oct);    // "52"
+===========================
+Binary / Hex / Octal → Decimal
+const bin = "101010";
+const hex = "2a";
+const oct = "52";
+
+console.log(parseInt(bin, 2)); // 42
+console.log(parseInt(hex, 16)); // 42
+console.log(parseInt(oct, 8)); // 42
+=================================
+
+const oct1 = "52"; // decimal 42
+const oct2 = "37"; // decimal 31
+
+const sumOct = (parseInt(oct1, 8) + parseInt(oct2, 8)).toString(8);
+
+console.log(sumOct); // "111" (decimal 73)
+
+-------------------------------------------------------------------------
+17. remove string with proper index
+
+const s1 = "I choose a Lazy person to do a hard job"; 
+const s2 = "Choose a person a  hard";
+
+let arr1= s1.split(" ").map(each=>each.toLowerCase())
+let arr2= s2.split(" ").map(each=>each.toLowerCase())
+// console.log(arr1,arr2)
+const indexToBeDeleted=[]
+let i=0;
+let j=0;
+
+while(j!=arr2.length)
+{
+        if(i==arr1.length){
+            i=0
+        }
+        if(arr1[i]==arr2[j])
+        {
+            indexToBeDeleted.push(i)
+            i++
+            j++
+        }
+        else{
+            i++
+        }
+}
+
+let res=s1.split(' ').filter((_,index)=>!indexToBeDeleted.includes(index)).join(' ')
+
+console.log(res)
+
+

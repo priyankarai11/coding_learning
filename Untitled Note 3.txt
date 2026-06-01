@@ -1,0 +1,303 @@
+const str=["flower","flow","flight"]
+ if(str.length===0) return ""
+str.sort()
+let first=str[0]
+let last=str[str.length-1]
+let i=0;
+    while(i<first.length && first[i]===last[i]){
+       i++
+    }
+
+console.log(first.slice(0,i))
+
+
+---
+do capital first letter
+const str='hello world'
+let res=''
+for(let i=0;i<str.length;i++){
+  if(i===0 || str[i-1]===' '){
+      res+=str[i].toUpperCase()
+  }else{
+      res+=str[i]
+  }
+}
+console.log(res)
+
+---
+
+ Check if a string contains only digits
+const str='1235'
+
+let n=true
+for(let i of str){
+    if(i<'0' || i > '9'){
+        n=false
+        break
+    }
+}
+console.log(n)
+---
+
+longest substring
+const str='dvdf'
+
+let current=''
+let longest=''
+
+for(let char of str){
+    let index=current.indexOf(char)
+    if(index !==-1){
+        current=current.slice(index+1)
+    }
+    current+=char
+    if(current.length>longest.length){
+        longest=current
+    }
+}
+console.log(longest)
+---
+
+
+const str='test@example.com'
+
+let count=/\S+@\S+\.\S+/
+console.log(count.test(str))
+
+---
+
+valid url
+
+function validurl(str){
+    try{
+        new URL(str)
+        return true
+    }
+    catch(err){
+        return false
+    }
+}
+
+console.log(validurl("www.example"));
+
+---
+
+snake to camelCase
+//"react_js" "reactJs"
+
+
+const str="hello_world"
+
+const res=str.replace(/_([a-z])/g,(_,letter)=>letter.toUpperCase())
+console.log(res)
+
+
+vise-versa
+
+const str="reactJsDev"
+
+const res=str.replace(/([A-Z])/g,'_$1').toLowerCase()
+console.log(res)
+-----------------------------------------------------------
+
+expand
+const str='x2y4'
+let res=[]
+for(let i=0;i<str.length;i++){
+    if(i%2!==0){
+    res.push(Array(Number(str[i])).fill(str[i-1]))
+    }
+}
+console.log(res.flat().join(''))
+-----------------------------------------------------------------
+function permute(str) {
+    if (str.length <= 1) return [str];
+return str.split('').flatMap((n,i)=>{
+    const remaining=str.slice(0,i)+str.slice(i+1)
+    return permute(remaining).map(ele=>n+ele)
+})
+}
+console.log(permute('abc'))
+====================================
+
+function permute(str) {
+    if (str.length <= 1) return [str];
+const res=[]
+    for(let i=0;i<str.length;i++){
+        const char=str[i]
+        const rem=str.slice(0,i)+str.slice(i+1)
+        for(let perm of permute(rem)){
+            res.push(char+perm)
+        }
+    }
+    return res
+}
+console.log(permute('abc'))
+-------------------------------------------------
+reverse word
+const str="hello world"
+
+ let res = '';
+    let temp = '';
+
+    for (let i of s) {
+        if (i === ' ') {
+                res += temp + ' ';
+                temp = '';
+        } else {
+            temp = i + temp; 
+        }
+    }
+     res += temp;
+ 
+
+console.log(res)
+---------------------------------------------------------------
+longest palindromic
+const str="cbbd"
+
+let res=''
+
+const expandstr=(left,right)=>{
+    while(left>=0 && right<str.length && str[left]===str[right]){
+        left--
+        right++
+    }
+    return str.slice(left+1,right)
+}
+
+for(let i=0;i<str.length;i++){
+    let odd=expandstr(i,i)
+    let even=expandstr(i,i+1)
+    if(odd.length>res.length) res=odd
+    if(even.length>res.length) res=even
+}
+
+console.log(res)
+---------------------------------------------------------------------
+
+Generate all subsequences of a string
+const str="abc"
+
+let res=[]
+
+function generateSubseq(index=0,current=''){
+    if(index===str.length){
+        res.push(current)
+        return
+    }
+    generateSubseq(index+1,current+str[index])
+ 
+     generateSubseq(index+1,current)
+ 
+}
+
+generateSubseq()
+
+console.log(res)
+---
+//33. Longest substring with at most k distinct characters
+const str="aaabbcc"
+    let current=''
+    let longest=''
+for(let char of str){
+
+    current+=char
+    while([...new Set(current)].length>2){
+        current=current.slice(1)
+    }
+    if(current.length>longest.length){
+        longest=current
+    }
+}
+console.log(longest)
+
+Count palindromic substrings
+
+const str="aaa"
+  let count=0
+  function expand(left,right){
+      while(left>=0 && right<str.length && str[left]===str[right]){
+          left--
+          right++
+          count++
+      }
+  }
+ 
+  for(let i=0;i<str.length;i++){
+      expand(i,i)
+      expand(i,i+1)
+  }
+
+console.log(count)
+---
+Check if string matches a pattern (like regex a*b*c*)
+
+const str="aaabbbccc"
+let pattern="a*b*c*"
+ 
+  const regex=new RegExp(`^${pattern}$`).test(str)
+
+console.log(regex)
+========================
+function matchesABC(str) {
+    let i = 0;
+
+    while (i < str.length && str[i] === 'a') i++;
+    while (i < str.length && str[i] === 'b') i++;
+    while (i < str.length && str[i] === 'c') i++;
+
+    return i === str.length;
+}
+---
+
+function countSubstringsWithAllVowels(str) {
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+    let count = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        let found = new Set();
+        for (let j = i; j < str.length; j++) {
+            if (vowels.has(str[j])) {
+                found.add(str[j]);
+            }
+            if (found.size === 5) { // all vowels found
+                count++;
+            }
+        }
+    }
+
+    return count;
+}
+
+console.log(countSubstringsWithAllVowels("aeiou"));         // 1
+console.log(countSubstringsWithAllVowels("aeiouxyzaeiou")); // 3+
+---
+Find the longest substring with even counts of all characters
+const str = "abba";
+let longest = "";
+
+for (let i = 0; i < str.length; i++) {
+    let freq = {};
+    for (let j = i; j < str.length; j++) {
+        let char = str[j];
+        freq[char] = (freq[char] || 0) + 1;
+
+        // Check if all counts are even
+        let allEven = true;
+        for (let key in freq) {
+            if (freq[key] % 2 !== 0) {
+                allEven = false;
+                break;
+            }
+        }
+
+        // Update longest if valid
+        if (allEven && (j - i + 1) > longest.length) {
+            longest = str.slice(i, j + 1);
+        }
+    }
+}
+
+console.log(longest); // "abba"
+---

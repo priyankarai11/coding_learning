@@ -1,0 +1,45 @@
+Here’s a structured list of topics that I believe are essential to ace any React or Frontend interview 👇
+
+🟡 JavaScript / TypeScript
+What are Promises
+Explain Event Delegation
+What are Polyfills
+Generics in TypeScript
+Type Inference in TypeScript
+Difference between type and interface
+What are Tuples
+Difference between Generators and Async/Await
+Explain Event Loop, Call Stack, and Callback Queue
+Difference between call, apply, and bind
+What are Prototypes
+Disadvantages of TypeScript
+
+🔵 React
+Core Hooks: useState, useEffect, useReducer
+Lifecycle methods: Class Components vs Functional Components
+How Access Token and Refresh Token work
+Implementing React Router, Private Routes, Role-based Routing, and Dynamic Routing
+Difference between Context API and Redux
+Data Flow in Redux
+Best Practices for state management
+Difference between SSR (Server-Side Rendering) and CSR (Client-Side Rendering)
+Difference between SSR and SSG (Static Site Generation)
+Limitations of React in large-scale applications
+Understanding the Virtual DOM
+What is Strict Mode in React
+Overview of Fiber Architecture
+Error Handling and Error Boundaries
+React’s Reconciliation process
+What is Hydration in React
+
+🟢 CSS
+Specificity in CSS
+Pseudo-selectors in CSS
+Media Queries and responsive design
+Difference between inline and inline-block elements
+
+These concepts are not just important for interviews, but they also strengthen your fundamentals as a frontend developer. 🚀
+If you’re preparing for React interviews, I hope this helps you structure your learning path better!
+Let’s keep learning and growing. 💪
+
+hashtag#ReactJS hashtag#FrontendDevelopment hashtag#JavaScript hashtag#TypeScript hashtag#WebDevelopment hashtag#InterviewPreparation hashtag#CSS hashtag#Redux hashtag#ReactHooks
