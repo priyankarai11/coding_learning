@@ -1,0 +1,169 @@
+export const performMultiDomainLogout = (
+  domains: string[],
+  onComplete?: () => void,
+) => {
+  const respondingOrigins = new Set<string>();
+  let finished = false;
+  let waitingFor = 0;
+
+  const maxWaitTime = 5000;
+
+  const finalize = () => {
+    if (finished) return;
+    finished = true;
+
+    try {
+      localStorage.clear();
+      localStorage.setItem('logout-event', Date.now().toString());
+    } catch (e) {
+      console.error('Error clearing localStorage:', e);
+    }
+
+    onComplete?.();
+  };
+
+  const globalTimeout = setTimeout(() => {
+    console.warn(
+      'Logout timeout — proceeding with whatever domains responded.',
+    );
+    finalize();
+  }, maxWaitTime);
+
+  const iframeRefs: HTMLIFrameElement[] = [];
+
+  const messageHandler = (e: MessageEvent) => {
+    const origin = e.origin;
+
+    if (!respondingOrigins.has(origin) && e.data === 'LOGOUT_READY') {
+      respondingOrigins.add(origin);
+      waitingFor++;
+
+      const iframe = iframeRefs.find((f) => new URL(f.src).origin === origin);
+      iframe?.contentWindow?.postMessage('LOGOUT', origin);
+    }
+
+    if (e.data === 'LOGOUT_COMPLETE') {
+      waitingFor--;
+
+      if (waitingFor <= 0) {
+        clearTimeout(globalTimeout);
+        cleanup();
+        finalize();
+      }
+    }
+  };
+
+  const cleanup = () => {
+    window.removeEventListener('message', messageHandler);
+    iframeRefs.forEach((iframe) => iframe.remove());
+  };
+
+  window.addEventListener('message', messageHandler);
+
+  domains.forEach((url) => {
+    try {
+      const { origin } = new URL(url);
+      const iframe = document.createElement('iframe');
+      Object.assign(iframe.style, { display: 'none', width: '0', height: '0' });
+
+      iframe.src = `${origin}/logout-helper`;
+      iframe.onerror = () => {
+        console.warn(`Could not load logout iframe for ${origin}`);
+      };
+
+      iframeRefs.push(iframe);
+      document.body.appendChild(iframe);
+    } catch (e) {
+      console.warn(`Invalid domain URL: ${url}`, e);
+    }
+  });
+};
+
+//common in every page
+
+'use client';
+import { useEffect } from 'react';
+import { LIST_DOMAINS } from '@/utils/isLocalhost';
+
+export default function LogoutHelper() {
+  useEffect(() => {
+    console.log(`[logout-helper] Mounted on ${window.location.origin}`);
+
+    const allowedOrigins = new Set(LIST_DOMAINS);
+
+    const notifyReady = () => {
+      try {
+        window.parent.postMessage('LOGOUT_READY', '*');
+      } catch (error) {
+        console.error('[logout-helper] Ready notify error:', error);
+      }
+    };
+
+    if (document.readyState === 'complete') notifyReady();
+    else window.addEventListener('load', notifyReady, { once: true });
+
+    const handleMessage = (e: MessageEvent) => {
+      if (!allowedOrigins.has(e.origin)) {
+        console.warn(`Blocked origin: ${e.origin}`);
+        return;
+      }
+
+      if (e.data === 'LOGOUT') {
+        try {
+          localStorage.removeItem('profile-info-storage');
+          localStorage.setItem('logout-event', Date.now().toString());
+        } catch (error) {
+          console.error('Logout error:', error);
+        } finally {
+          setTimeout(() => {
+            window.parent.postMessage('LOGOUT_COMPLETE', e.origin);
+          }, 200);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
+
+  return null;
+}
+
+//function usage
+ onSuccess: (data) => {
+      performMultiDomainLogout(LIST_DOMAINS, () => {
+        console.log('Multi-domain logout completed, proceeding with login');
+
+        if (data.activation_id) {
+          setActivationId(data.activation_id);
+          setCurrentStep(LoginStep.OTPVERIFICATION);
+          toast({
+            description: 'Enter the OTP received in Mail',
+          });
+        } else {
+          const access_token = data.access_token!;
+          executeUserProfileInformation({});
+          const expiresAt = new Date(data.expires_at!);
+          updateAccessToken(access_token, expiresAt);
+          toast({
+            description: 'Logged in Successfully',
+          });
+          localStorage.removeItem('redirect');
+          setTimeout(() => {
+            if (redirect && redirectionUrl) {
+              window.location.href = redirectionUrl;
+            } else {
+              window.location.href = isLocalhost
+                ? 'http://localhost:3000/dashboard'
+                : 'https://app.eskeon.com/dashboard';
+            }
+            setIsLoading(false);
+          }, 500);
+        }
+      });
+    },
+
+
+
